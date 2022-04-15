@@ -24,3 +24,5 @@ spring:
 logging:
   level:
     org.hibernate.type: trace # sql binding 값 출력
+
+login: pull-request-test
