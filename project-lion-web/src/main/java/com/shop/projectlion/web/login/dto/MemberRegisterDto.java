@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class MemberResisterDto {
+public class MemberRegisterDto {
 
     private String name;
 

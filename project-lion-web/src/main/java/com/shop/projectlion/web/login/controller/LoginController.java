@@ -1,6 +1,6 @@
 package com.shop.projectlion.web.login.controller;
 
-import com.shop.projectlion.web.login.dto.MemberResisterDto;
+import com.shop.projectlion.web.login.dto.MemberRegisterDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +17,7 @@ public class LoginController {
 
     @GetMapping("/register")
     public String register(Model model) {
-        model.addAttribute("memberRegisterDto", new MemberResisterDto());
+        model.addAttribute("memberRegisterDto", new MemberRegisterDto());
         return "login/registerform";
     }
 
