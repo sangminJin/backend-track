@@ -3,6 +3,14 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
+    <head>
+        <style>
+            .server-error {
+                color: red;
+            }
+        </style>
+    </head>
+
     <div layout:fragment="content" class="content">
         <div class="container center_div w-50 mt-4">
             <form role="form" method="post" action="/login">
@@ -16,6 +24,8 @@
                     <label for="password">비밀번호</label>
                     <input type="password" name="password" id="password" class="form-control" placeholder="비밀번호 입력">
                 </div>
+
+                <p th:text="${errorMsg}" class="server-error"></p>
 
                 <div class="mt-3 text-center">
                     <button class="btn btn-primary">로그인</button>

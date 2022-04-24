@@ -3,13 +3,18 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
 
-    <th:block layout:fragment="css">
+    <head>
         <style>
-            .signUpError {
+            .filed-error {
                 color: red;
             }
+
+            .server-error {
+                color: red;
+                text-align: center;
+            }
         </style>
-    </th:block>
+    </head>
 
     <div layout:fragment="content" class="content">
         <div class="container center_div w-50 mt-4">
@@ -18,24 +23,28 @@
                 <div class="form-group mb-3">
                     <label th:for="name">이름</label>
                     <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력해주세요" id="name" name="name" value="">
-                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="signUpError">asd</p>
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="filed-error"></p>
                 </div>
 
                 <div class="form-group mb-3">
                     <label th:for="email">이메일주소</label>
                     <input type="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력해주세요" id="email" name="email" value="">
-                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="signUpError">asd</p>
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="filed-error"></p>
                 </div>
 
                 <div class="form-group mb-3">
                     <label th:for="password">비밀번호</label>
                     <input type="password" th:field="*{password}" class="form-control" placeholder="비밀번호 입력" id="password" name="password" value="">
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="filed-error"></p>
                 </div>
 
                 <div class="form-group mb-3">
                     <label th:for="password2">비밀번호 확인</label>
                     <input type="password" th:field="*{password2}" class="form-control" placeholder="비밀번호 재입력" id="password2" name="password2" value="">
+                    <p th:if="${#fields.hasErrors('password2')}" th:errors="*{password2}" class="filed-error"></p>
                 </div>
+
+                <p th:text="${errorMsg}" class="server-error"></p>
 
                 <div class="mb-3 text-center">
                     <button type="submit" class="btn btn-primary" style="">회원 가입</button>
