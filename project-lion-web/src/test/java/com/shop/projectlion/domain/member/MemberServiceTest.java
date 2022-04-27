@@ -1,5 +1,8 @@
 package com.shop.projectlion.domain.member;
 
+import com.shop.projectlion.domain.member.entity.Member;
+import com.shop.projectlion.domain.member.repository.MemberRepository;
+import com.shop.projectlion.domain.member.service.MemberService;
 import com.shop.projectlion.web.login.dto.MemberRegisterDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,8 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.transaction.Transactional;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 

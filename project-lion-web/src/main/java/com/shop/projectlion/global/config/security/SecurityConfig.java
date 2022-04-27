@@ -1,4 +1,4 @@
-package com.shop.projectlion.global.config;
+package com.shop.projectlion.global.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -28,25 +29,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/css/**");
+                .antMatchers("/css/**", "/js/**", "/img/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .failureUrl("/login?isError=true")
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login");
+
+        http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/login", "/register").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/")
-                .failureHandler(customFailureHandler)
-                .usernameParameter("email")
-                .and()
-                .logout()
-                .logoutSuccessUrl("/login");
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated();
+
+        // 인증되지 않은 사용자가 리소스에 접근할 경우 처리하는 클래스 별도로 설정
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+
+
     }
 
     @Override

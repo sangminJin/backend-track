@@ -1,8 +1,8 @@
 package com.shop.projectlion.web.login.dto;
 
-import com.shop.projectlion.domain.member.Member;
-import com.shop.projectlion.domain.member.MemberType;
-import com.shop.projectlion.domain.member.Role;
+import com.shop.projectlion.domain.member.entity.Member;
+import com.shop.projectlion.domain.member.constant.MemberType;
+import com.shop.projectlion.domain.member.constant.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

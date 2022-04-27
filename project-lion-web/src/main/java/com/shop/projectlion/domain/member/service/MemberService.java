@@ -1,5 +1,7 @@
-package com.shop.projectlion.domain.member;
+package com.shop.projectlion.domain.member.service;
 
+import com.shop.projectlion.domain.member.entity.Member;
+import com.shop.projectlion.domain.member.repository.MemberRepository;
 import com.shop.projectlion.global.error.exception.BusinessException;
 import com.shop.projectlion.global.error.exception.ErrorCode;
 import com.shop.projectlion.web.login.dto.MemberRegisterDto;

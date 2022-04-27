@@ -1,4 +1,4 @@
-package com.shop.projectlion.domain.member;
+package com.shop.projectlion.domain.member.constant;
 
 import lombok.Getter;
 

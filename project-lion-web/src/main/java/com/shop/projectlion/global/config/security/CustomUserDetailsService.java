@@ -1,15 +1,14 @@
-package com.shop.projectlion.domain.login;
+package com.shop.projectlion.global.config.security;
 
-import com.shop.projectlion.domain.member.Member;
-import com.shop.projectlion.domain.member.MemberRepository;
+import com.shop.projectlion.domain.member.entity.Member;
+import com.shop.projectlion.domain.member.repository.MemberRepository;
+import com.shop.projectlion.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -19,9 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Member> result = memberRepository.findByEmail(email);
-
-        Member findMember = result.orElseThrow(() -> new UsernameNotFoundException(email));
+        Member findMember = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.LOGIN_ERROR.getMessage()));
 
         return User.builder()
                 .username(findMember.getEmail())

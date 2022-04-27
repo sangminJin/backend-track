@@ -1,7 +1,8 @@
 package com.shop.projectlion.web.login.controller;
 
-import com.shop.projectlion.domain.member.MemberService;
+import com.shop.projectlion.domain.member.service.MemberService;
 import com.shop.projectlion.global.error.exception.BusinessException;
+import com.shop.projectlion.global.error.exception.ErrorCode;
 import com.shop.projectlion.web.login.dto.MemberRegisterDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,9 +21,9 @@ public class LoginController {
     private final MemberService memberService;
 
     @GetMapping("/login")
-    public String loginForm(@RequestParam(value = "errorMsg", required = false) String errorMsg,
+    public String loginForm(@RequestParam(required = false) boolean isError,
                             Model model) {
-        model.addAttribute("errorMsg", errorMsg);
+        if(isError) model.addAttribute("loginError", ErrorCode.LOGIN_ERROR.getMessage());
         return "login/loginForm";
     }
 
@@ -34,14 +35,14 @@ public class LoginController {
 
     @PostMapping("/register")
     public String register(@Valid MemberRegisterDto memberRegisterDto,
-                           BindingResult bindingResult,
-                           Model model) {
+                           BindingResult bindingResult) {
         if(bindingResult.hasErrors()) return "login/registerform";
 
         try {
             memberService.saveMember(memberRegisterDto);
         } catch (BusinessException e) {
-            model.addAttribute("errorMsg", e.getMessage());
+            e.printStackTrace();
+            bindingResult.reject("validationError", e.getMessage());
             return "login/registerform";
         }
         return "redirect:/";

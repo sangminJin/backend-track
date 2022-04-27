@@ -1,4 +1,4 @@
-package com.shop.projectlion.domain;
+package com.shop.projectlion.domain.base;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedBy;
@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
     @CreatedDate
-    @Column(name = "create_time", updatable = false)
+    @Column(name = "create_time", nullable = false, updatable = false)
     private LocalDateTime createTime;
 
     @CreatedBy
-    @Column(name = "created_by", updatable = false)
+    @Column(name = "created_by", nullable = false, updatable = false)
     private String createdBy;
 
     @LastModifiedDate
