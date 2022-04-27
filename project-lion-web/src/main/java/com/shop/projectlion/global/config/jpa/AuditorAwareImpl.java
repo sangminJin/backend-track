@@ -18,9 +18,11 @@ public class AuditorAwareImpl implements AuditorAware<String> {
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String modifiedBy = "SYSTEM";
+        String modifiedBy = "";
 
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            modifiedBy = httpServletRequest.getRequestURI();
+        } else {
             modifiedBy = authentication.getName();
         }
 

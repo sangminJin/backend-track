@@ -20,24 +20,24 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(unique = true, nullable = false, length = 50)
     private String email;
 
-    @Column(name = "member_name", nullable = false)
+    @Column(nullable = false, length = 200)
+    private String password;
+
+    @Column(name = "member_name", nullable = false, length = 20)
     private String memberName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "member_type")
     private MemberType memberType;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
     @Column(name = "refresh_token")
     private String refreshToken;
 
-    @Column(name = "role")
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private Role role;
 
     @Column(name = "token_expiration_time")
