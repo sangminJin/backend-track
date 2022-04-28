@@ -1,17 +1,22 @@
 package com.shop.projectlion.domain.member.entity;
 
 import com.shop.projectlion.domain.base.BaseEntity;
+import com.shop.projectlion.domain.item.entity.Delivery;
+import com.shop.projectlion.domain.item.entity.Item;
 import com.shop.projectlion.domain.member.constant.MemberType;
 import com.shop.projectlion.domain.member.constant.Role;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Member extends BaseEntity {
 
@@ -42,6 +47,12 @@ public class Member extends BaseEntity {
 
     @Column(name = "token_expiration_time")
     private LocalDateTime tokenExpirationTime;
+
+    @OneToMany(mappedBy = "member")
+    private List<Delivery> deliveries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Item> items = new ArrayList<>();
 
     @Builder
     public Member(String email, String memberName, MemberType memberType, String password, Role role) {
