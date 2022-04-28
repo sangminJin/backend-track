@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@org.springframework.transaction.annotation.Transactional(readOnly = true)
 @Service
 public class MemberService {
 

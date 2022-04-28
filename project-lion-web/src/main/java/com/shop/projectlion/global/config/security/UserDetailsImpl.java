@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CustomUserDetails implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private final Member member;
     private final List<GrantedAuthority> authorities = new ArrayList<>();   // 계정 권한
 
-    public CustomUserDetails(Member member) {
+    public UserDetailsImpl(Member member) {
         this.member = member;
         authorities.add(new SimpleGrantedAuthority("ROLE_" + member.getRole().name()));
     }
