@@ -1,8 +1,10 @@
-package com.shop.projectlion.domain.item.entity;
+package com.shop.projectlion.domain.delivery.entity;
 
 import com.shop.projectlion.domain.base.BaseEntity;
+import com.shop.projectlion.domain.item.entity.Item;
 import com.shop.projectlion.domain.member.entity.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +34,11 @@ public class Delivery extends BaseEntity {
 
     @OneToMany(mappedBy = "delivery")
     private List<Item> items = new ArrayList<>();
+
+    @Builder
+    public Delivery(Integer deliveryFee, String deliveryName, Member member) {
+        this.deliveryFee = deliveryFee;
+        this.deliveryName = deliveryName;
+        this.member = member;
+    }
 }

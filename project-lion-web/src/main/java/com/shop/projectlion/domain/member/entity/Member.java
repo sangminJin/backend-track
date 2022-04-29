@@ -1,7 +1,7 @@
 package com.shop.projectlion.domain.member.entity;
 
 import com.shop.projectlion.domain.base.BaseEntity;
-import com.shop.projectlion.domain.item.entity.Delivery;
+import com.shop.projectlion.domain.delivery.entity.Delivery;
 import com.shop.projectlion.domain.item.entity.Item;
 import com.shop.projectlion.domain.member.constant.MemberType;
 import com.shop.projectlion.domain.member.constant.Role;

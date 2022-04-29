@@ -8,12 +8,12 @@ import com.shop.projectlion.web.login.dto.MemberRegisterDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@org.springframework.transaction.annotation.Transactional(readOnly = true)
+@Transactional(readOnly = true)
 @Service
 public class MemberService {
 
@@ -21,12 +21,12 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long saveMember(MemberRegisterDto memberRegisterDto) {
+    public Member saveMember(MemberRegisterDto memberRegisterDto) {
         checkPwdEquals(memberRegisterDto.getPassword(), memberRegisterDto.getPassword2());
         checkDuplicateMember(memberRegisterDto.getEmail());
 
         Member savedMember = memberRepository.save(memberRegisterDto.toEntity(passwordEncoder));
-        return savedMember.getId();
+        return savedMember;
     }
 
     private void checkPwdEquals(String pw1, String pw2) {
