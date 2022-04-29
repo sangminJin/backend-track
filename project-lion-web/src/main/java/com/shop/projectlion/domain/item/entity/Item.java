@@ -1,9 +1,11 @@
 package com.shop.projectlion.domain.item.entity;
 
 import com.shop.projectlion.domain.base.BaseEntity;
+import com.shop.projectlion.domain.delivery.entity.Delivery;
 import com.shop.projectlion.domain.item.constant.ItemSellStatus;
 import com.shop.projectlion.domain.member.entity.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -47,4 +49,21 @@ public class Item extends BaseEntity {
 
     @OneToMany(mappedBy = "item")
     private List<ItemImage> itemImages = new ArrayList<>();
+
+    @Builder
+    public Item(String itemDetail,
+                String itemName,
+                ItemSellStatus itemSellStatus,
+                Integer price,
+                Integer stockNumber,
+                Member member,
+                Delivery delivery) {
+        this.itemDetail = itemDetail;
+        this.itemName = itemName;
+        this.itemSellStatus = itemSellStatus;
+        this.price = price;
+        this.stockNumber = stockNumber;
+        this.member = member;
+        this.delivery = delivery;
+    }
 }

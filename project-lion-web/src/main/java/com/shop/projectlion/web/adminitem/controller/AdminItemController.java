@@ -1,16 +1,25 @@
 package com.shop.projectlion.web.adminitem.controller;
 
+import com.shop.projectlion.domain.delivery.service.DeliveryService;
 import com.shop.projectlion.domain.item.constant.ItemSellStatus;
+import com.shop.projectlion.domain.item.service.ItemService;
+import com.shop.projectlion.domain.member.entity.Member;
+import com.shop.projectlion.global.config.security.LoginMember;
+import com.shop.projectlion.global.error.exception.ErrorCode;
 import com.shop.projectlion.web.adminitem.dto.DeliveryDto;
 import com.shop.projectlion.web.adminitem.dto.InsertItemDto;
 import com.shop.projectlion.web.adminitem.dto.UpdateItemDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,21 +29,44 @@ import java.util.List;
 @RequestMapping("/admin/items")
 public class AdminItemController {
 
-    @GetMapping("/new")
-    public String itemForm(Model model, Principal principal) {
+    private final ItemService itemService;
+    private final DeliveryService deliveryService;
 
-        List<DeliveryDto> deliveryDtos = new ArrayList<>();
-        DeliveryDto deliveryDto = DeliveryDto.builder()
-                .deliveryId(1L)
-                .deliveryName("마포구 물류센터")
-                .deliveryFee(3000)
-                .build();
-        deliveryDtos.add(deliveryDto);
+    @GetMapping("/new")
+    public String itemForm(Model model, @LoginMember Member loginMember) {
+        List<DeliveryDto> deliveryDtos = deliveryService.getDeliveryInfo(loginMember);
 
         model.addAttribute("deliveryDtos", deliveryDtos);
         model.addAttribute("insertItemDto", new InsertItemDto());
 
         return "adminitem/registeritemform";
+    }
+
+    @PostMapping("/new")
+    public String itemRegister(@Valid InsertItemDto insertItemDto,
+                               BindingResult bindingResult,
+                               Model model,
+                               @LoginMember Member loginMember) {
+        List<DeliveryDto> deliveryDtos = deliveryService.getDeliveryInfo(loginMember);
+        model.addAttribute("deliveryDtos", deliveryDtos);
+
+        if(bindingResult.hasErrors()) return "adminitem/registeritemform";
+
+        MultipartFile repImage = insertItemDto.getItemImageFiles().stream().findFirst().get();
+        if(repImage.isEmpty()) {
+            bindingResult.reject("notExistRepImg", ErrorCode.NOT_EXIST_REP_IMG.getMessage());
+            return "adminitem/registeritemform";
+        }
+
+        try {
+            itemService.saveItem(insertItemDto, loginMember);
+        } catch (Exception e) {
+            e.printStackTrace();
+            bindingResult.reject("notExistRepImg", ErrorCode.NOT_EXIST_REP_IMG.getMessage());
+            return "adminitem/registeritemform";
+        }
+
+        return "redirect:/";
     }
 
     @GetMapping("/{itemId}")
