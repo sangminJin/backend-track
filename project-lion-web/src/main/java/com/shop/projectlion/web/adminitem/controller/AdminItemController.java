@@ -46,15 +46,16 @@ public class AdminItemController {
         if(!insertItemDto.hasRepImage()) bindingResult.reject("notExistRepImg", ErrorCode.NOT_EXIST_REP_IMG.getMessage());
         if(bindingResult.hasErrors()) return "adminitem/registeritemform";
 
+        Long savedItemId = null;
         try {
-            itemService.saveItem(insertItemDto, loginMember);
+            savedItemId = itemService.saveItem(insertItemDto, loginMember);
         } catch (Exception e) {
             e.printStackTrace();
             bindingResult.reject("itemRegisterError", ErrorCode.ITEM_REGISTER_ERROR.getMessage());
             return "adminitem/registeritemform";
         }
 
-        return "redirect:/";
+        return "redirect:/admin/items/" + savedItemId;
     }
 
     @GetMapping("/{itemId}")

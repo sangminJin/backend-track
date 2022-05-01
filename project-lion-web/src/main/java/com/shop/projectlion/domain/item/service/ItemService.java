@@ -27,7 +27,7 @@ public class ItemService {
     private final ItemImageService itemImageService;
 
     @Transactional
-    public void saveItem(InsertItemDto insertItemDto, Member member) throws Exception{
+    public Long saveItem(InsertItemDto insertItemDto, Member member) throws Exception{
         Delivery delivery = deliveryRepository.findById(insertItemDto.getDeliveryId()).orElse(null);
         Item saveItem = itemRepository.save(insertItemDto.toEntity(member, delivery));
 
@@ -45,6 +45,8 @@ public class ItemService {
 
             itemImageService.saveItemImg(itemImage, multipartFile);
         }
+
+        return saveItem.getId();
     }
 
     public UpdateItemDto getItemDetail(Long itemId) {
