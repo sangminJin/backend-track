@@ -1,7 +1,6 @@
 package com.shop.projectlion.domain.delivery.entity;
 
 import com.shop.projectlion.domain.base.BaseEntity;
-import com.shop.projectlion.domain.item.entity.Item;
 import com.shop.projectlion.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,9 +28,6 @@ public class Delivery extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
-    @OneToMany(mappedBy = "delivery")
-    private List<Item> items = new ArrayList<>();
 
     @Builder
     public Delivery(Integer deliveryFee, String deliveryName, Member member) {

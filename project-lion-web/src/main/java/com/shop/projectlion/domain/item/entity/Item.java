@@ -4,6 +4,7 @@ import com.shop.projectlion.domain.base.BaseEntity;
 import com.shop.projectlion.domain.delivery.entity.Delivery;
 import com.shop.projectlion.domain.item.constant.ItemSellStatus;
 import com.shop.projectlion.domain.member.entity.Member;
+import com.shop.projectlion.web.adminitem.dto.UpdateItemDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,6 +64,18 @@ public class Item extends BaseEntity {
         this.itemSellStatus = itemSellStatus;
         this.price = price;
         this.stockNumber = stockNumber;
+        this.member = member;
+        this.delivery = delivery;
+    }
+
+    public void modifyItemInfo(UpdateItemDto updateItemDto,
+                               Delivery delivery,
+                               Member member) {
+        this.itemDetail = updateItemDto.getItemDetail();
+        this.itemName = updateItemDto.getItemName();
+        this.itemSellStatus = updateItemDto.getItemSellStatus();
+        this.price = updateItemDto.getPrice();
+        this.stockNumber = updateItemDto.getStockNumber();
         this.member = member;
         this.delivery = delivery;
     }

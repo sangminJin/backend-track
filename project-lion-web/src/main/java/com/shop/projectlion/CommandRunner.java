@@ -6,12 +6,14 @@ import com.shop.projectlion.domain.member.entity.Member;
 import com.shop.projectlion.domain.member.service.MemberService;
 import com.shop.projectlion.web.login.dto.MemberRegisterDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CommandRunner implements CommandLineRunner {
 
     private final MemberService memberService;
@@ -26,8 +28,8 @@ public class CommandRunner implements CommandLineRunner {
     @Transactional
     public void initData() {
         MemberRegisterDto memberRegisterDto = MemberRegisterDto.builder()
-                .name("진상민")
-                .email("jin0849@naver.com")
+                .name("관리자")
+                .email("admin@lionshop.com")
                 .password("1q2w3e4r")
                 .password2("1q2w3e4r")
                 .build();
@@ -49,12 +51,12 @@ public class CommandRunner implements CommandLineRunner {
         deliveryRepository.save(delivery1);
         deliveryRepository.save(delivery2);
 
-        System.out.println("==========================");
-        System.out.println("테스트용 초기 계정 정보");
-        System.out.println("ID : jin0849@naver.com");
-        System.out.println("PW : 1q2w3e4r");
-        System.out.println("권한 : ADMIN");
-        System.out.println("==========================");
+        log.info("==========================");
+        log.info("테스트용 초기 계정 정보");
+        log.info("ID : admin@lionshop.com");
+        log.info("PW : 1q2w3e4r");
+        log.info("권한 : ADMIN");
+        log.info("==========================");
     }
 
 }

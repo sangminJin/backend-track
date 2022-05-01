@@ -35,6 +35,11 @@ public class InsertItemDto {
 
     private List<MultipartFile> itemImageFiles;
 
+    public boolean hasRepImage() {
+        MultipartFile repImageFile = itemImageFiles.stream().findFirst().orElse(null);
+        return !repImageFile.isEmpty();
+    }
+
     public Item toEntity(Member member, Delivery delivery) {
         return Item.builder()
                 .itemDetail(itemDetail)

@@ -1,10 +1,10 @@
 package com.shop.projectlion.web.adminitem.controller;
 
 import com.shop.projectlion.domain.delivery.service.DeliveryService;
-import com.shop.projectlion.domain.item.constant.ItemSellStatus;
 import com.shop.projectlion.domain.item.service.ItemService;
 import com.shop.projectlion.domain.member.entity.Member;
 import com.shop.projectlion.global.config.security.LoginMember;
+import com.shop.projectlion.global.error.exception.BusinessException;
 import com.shop.projectlion.global.error.exception.ErrorCode;
 import com.shop.projectlion.web.adminitem.dto.DeliveryDto;
 import com.shop.projectlion.web.adminitem.dto.InsertItemDto;
@@ -13,15 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -35,7 +29,6 @@ public class AdminItemController {
     @GetMapping("/new")
     public String itemForm(Model model, @LoginMember Member loginMember) {
         List<DeliveryDto> deliveryDtos = deliveryService.getDeliveryInfo(loginMember);
-
         model.addAttribute("deliveryDtos", deliveryDtos);
         model.addAttribute("insertItemDto", new InsertItemDto());
 
@@ -50,19 +43,14 @@ public class AdminItemController {
         List<DeliveryDto> deliveryDtos = deliveryService.getDeliveryInfo(loginMember);
         model.addAttribute("deliveryDtos", deliveryDtos);
 
+        if(!insertItemDto.hasRepImage()) bindingResult.reject("notExistRepImg", ErrorCode.NOT_EXIST_REP_IMG.getMessage());
         if(bindingResult.hasErrors()) return "adminitem/registeritemform";
-
-        MultipartFile repImage = insertItemDto.getItemImageFiles().stream().findFirst().get();
-        if(repImage.isEmpty()) {
-            bindingResult.reject("notExistRepImg", ErrorCode.NOT_EXIST_REP_IMG.getMessage());
-            return "adminitem/registeritemform";
-        }
 
         try {
             itemService.saveItem(insertItemDto, loginMember);
         } catch (Exception e) {
             e.printStackTrace();
-            bindingResult.reject("notExistRepImg", ErrorCode.NOT_EXIST_REP_IMG.getMessage());
+            bindingResult.reject("itemRegisterError", ErrorCode.ITEM_REGISTER_ERROR.getMessage());
             return "adminitem/registeritemform";
         }
 
@@ -70,44 +58,45 @@ public class AdminItemController {
     }
 
     @GetMapping("/{itemId}")
-    public String itemEdit(@PathVariable Long itemId, Model model, Principal principal) {
+    public String itemEditForm(@PathVariable Long itemId,
+                               Model model,
+                               @RequestParam(required = false) boolean isError,
+                               @LoginMember Member loginMember) {
+        if(isError) model.addAttribute("errorMsg", ErrorCode.ITEM_UPDATE_FILED_ERROR.getMessage());
 
-        // 배송 정보
-        List<DeliveryDto> deliveryDtos = new ArrayList<>();
-        DeliveryDto deliveryDto = DeliveryDto.builder()
-                .deliveryId(1L)
-                .deliveryName("마포구 물류센터")
-                .deliveryFee(3000)
-                .build();
-        deliveryDtos.add(deliveryDto);
-
-        // 상품 이미지
-        List<UpdateItemDto.ItemImageDto> itemImageDtos = new ArrayList<>();
-        for(int i=1;i<6;i++) {
-            UpdateItemDto.ItemImageDto itemImageDto = UpdateItemDto.ItemImageDto
-                    .builder()
-                    .itemImageId(Long.valueOf(i+4))
-                    .originalImageName("파란색 청바지 이미지" + i)
-                    .build();
-            itemImageDtos.add(itemImageDto);
-        }
-
-        // 상품 정보
-        UpdateItemDto updateItemDto = UpdateItemDto.builder()
-                .itemId(2L)
-                .itemName("청바지")
-                .itemDetail("파란색 청바지")
-                .itemSellStatus(ItemSellStatus.SELL)
-                .stockNumber(150)
-                .price(30000)
-                .deliveryId(1L)
-                .itemImageDtos(itemImageDtos)
-                .build();
-
+        List<DeliveryDto> deliveryDtos = deliveryService.getDeliveryInfo(loginMember);
         model.addAttribute("deliveryDtos", deliveryDtos);
-        model.addAttribute("updateItemDto", updateItemDto);
+
+        try {
+            UpdateItemDto updateItemDto = itemService.getItemDetail(itemId);
+            model.addAttribute("updateItemDto", updateItemDto);
+        } catch (BusinessException e) {
+            e.printStackTrace();
+            model.addAttribute("errorMsg", e.getMessage());
+            return "error/error";
+        }
 
         return "adminitem/updateitemform";
     }
 
+    @PostMapping("/{itemId}")
+    public String itemEdit(@Valid UpdateItemDto updateItemDto,
+                           BindingResult bindingResult,
+                           Model model,
+                           @LoginMember Member loginMember) {
+        if(bindingResult.hasErrors() || !updateItemDto.hasRepImage()) {
+            // redirect시에 bindingRsult 객체를 넘기는게 잘 안되어 아래와 같이 처리..
+            return "redirect:/admin/items/" + updateItemDto.getItemId() + "?isError=true";
+        }
+
+        try {
+            itemService.updateItem(updateItemDto, loginMember);
+        } catch (Exception e) {
+            e.printStackTrace();
+            bindingResult.reject("itemUpdateError", ErrorCode.ITEM_UPDATE_ERROR.getMessage());
+            return "error/error";
+        }
+
+        return "redirect:/admin/items/" + updateItemDto.getItemId();
+    }
 }

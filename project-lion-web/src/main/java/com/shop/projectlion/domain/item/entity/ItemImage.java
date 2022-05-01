@@ -36,18 +36,23 @@ public class ItemImage extends BaseEntity {
     private Item item;
 
     public void updateRepImage(Boolean repImage) {
-        isRepImage = repImage;
+        this.isRepImage = repImage;
     }
 
     public void updateItemImgInfo(UploadFile uploadFile) {
-        imageName = uploadFile.getStoreFileName();
-        imageUrl = uploadFile.getFileUploadUrl();
+        this.imageName = uploadFile.getStoreFileName();
+        this.imageUrl = uploadFile.getFileUploadUrl();
+    }
+
+    // 연관관계 편의 메소드
+    public void updateItem(Item item) {
+        this.item = item;
+        item.getItemImages().add(this);
     }
 
     @Builder
-    public ItemImage(Boolean isRepImage, String originalImageName, Item item) {
+    public ItemImage(Boolean isRepImage, String originalImageName) {
         this.isRepImage = isRepImage;
         this.originalImageName = originalImageName;
-        this.item = item;
     }
 }

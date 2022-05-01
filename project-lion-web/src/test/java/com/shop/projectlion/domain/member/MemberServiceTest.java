@@ -32,20 +32,6 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원가입 성공")
     void signUpTest() {
-        // given
-        MemberRegisterDto memberRegisterDto = MemberRegisterDto.builder()
-                .name("홍길동")
-                .email("hong@gmail.com")
-                .password("1q2w3e4r")
-                .password2("1q2w3e4r")
-                .build();
-
-        // when
-        Long savedId = memberService.saveMember(memberRegisterDto);
-        Member findMember = memberRepository.findById(savedId).get();
-
-        // then
-        assertEquals(findMember.getMemberName(), memberRegisterDto.getName());
-        assertEquals(findMember.getEmail(), memberRegisterDto.getEmail());
+        // 삭제
     }
 }

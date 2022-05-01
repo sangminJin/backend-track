@@ -25,4 +25,11 @@ public class ItemImageService {
         if(uploadFile != null) itemImage.updateItemImgInfo(uploadFile);
         itemImageRepository.save(itemImage);
     }
+
+    @Transactional
+    public void deleteItemImg(ItemImage itemImage) {
+        // 기존에 첨부한 파일이 없으면, DB 데이터만 삭제시킨다.
+        if(itemImage.getImageUrl() != null) fileService.deleteFile(itemImage.getImageUrl());
+        itemImageRepository.delete(itemImage);
+    }
 }
