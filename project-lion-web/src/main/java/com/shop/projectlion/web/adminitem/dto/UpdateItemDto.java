@@ -2,7 +2,7 @@ package com.shop.projectlion.web.adminitem.dto;
 
 import com.shop.projectlion.domain.item.constant.ItemSellStatus;
 import com.shop.projectlion.domain.item.entity.Item;
-import com.shop.projectlion.domain.item.entity.ItemImage;
+import com.shop.projectlion.domain.itemimage.entity.ItemImage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -44,7 +44,6 @@ public class UpdateItemDto {
 
     private List<String> originalImageNames;
 
-    private List<Long> itemImageIds;
 
     public boolean hasRepImage() {
         MultipartFile repImageFile = itemImageFiles.stream().findFirst().orElse(null);
@@ -54,61 +53,66 @@ public class UpdateItemDto {
         return true;
     }
 
-    public void makeItemImageDtos() {
-        List<ItemImageDto> itemImageDtos = new ArrayList<>();
-        for(int i=0; i<5; i++) {
-            ItemImageDto itemImageDto = ItemImageDto.builder()
-                    .itemImageId(itemImageIds.get(i))
-                    .originalImageName(originalImageNames.get(i))
-                    .build();
-            itemImageDtos.add(itemImageDto);
-        }
+    @Builder
+    public UpdateItemDto(Long itemId,
+                         String itemName,
+                         Integer price,
+                         String itemDetail,
+                         Integer stockNumber,
+                         ItemSellStatus itemSellStatus,
+                         Long deliveryId,
+                         List<ItemImageDto> itemImageDtos) {
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.price = price;
+        this.itemDetail = itemDetail;
+        this.stockNumber = stockNumber;
+        this.itemSellStatus = itemSellStatus;
+        this.deliveryId = deliveryId;
         this.itemImageDtos = itemImageDtos;
     }
 
-    @Setter
+    public Item toEntity() {
+        return Item.builder()
+                .itemName(itemName)
+                .itemDetail(itemDetail)
+                .price(price)
+                .itemSellStatus(itemSellStatus)
+                .stockNumber(stockNumber)
+                .build();
+    }
+
+    public static UpdateItemDto of(Item item) {
+        List<ItemImageDto> itemImageDtos = ItemImageDto.of(item.getItemImages());
+
+        UpdateItemDto updateItemDto = UpdateItemDto.builder()
+                .itemId(item.getId())
+                .itemName(item.getItemName())
+                .itemDetail(item.getItemDetail())
+                .itemSellStatus(item.getItemSellStatus())
+                .stockNumber(item.getStockNumber())
+                .price(item.getPrice())
+                .deliveryId(item.getDelivery().getId())
+                .itemImageDtos(itemImageDtos)
+                .build();
+
+        return updateItemDto;
+    }
+
+    @Builder
     @Getter
+    @Setter
     public static class ItemImageDto {
         private Long itemImageId;
         private String originalImageName;
 
-        @Builder
-        public ItemImageDto(Long itemImageId, String originalImageName) {
-            this.itemImageId = itemImageId;
-            this.originalImageName = originalImageName;
+        public static List<ItemImageDto> of(List<ItemImage> itemImages) {
+            return itemImages.stream()
+                    .map(itemImage -> ItemImageDto.builder()
+                            .itemImageId(itemImage.getId())
+                            .originalImageName(itemImage.getOriginalImageName())
+                            .build())
+                    .collect(Collectors.toList());
         }
-    }
-
-    public UpdateItemDto(Item entity) {
-        this.itemId = entity.getId();
-        this.itemName = entity.getItemName();
-        this.price = entity.getPrice();
-        this.itemDetail = entity.getItemDetail();
-        this.stockNumber = entity.getStockNumber();
-        this.itemSellStatus = entity.getItemSellStatus();
-        this.deliveryId = entity.getDelivery().getId();
-        // 아이템 이미지 관련 필드 초기화
-        initItemImageInfo(entity.getItemImages());
-    }
-
-    private void initItemImageInfo(List<ItemImage> itemImages) {
-        List<ItemImageDto> itemImageDtos = new ArrayList<>();
-        List<String> originalImageNames = new ArrayList<>();
-        List<Long> itemImageIds = new ArrayList<>();
-
-        itemImages.forEach((itemImage) -> {
-            ItemImageDto itemImageDto = ItemImageDto.builder()
-                    .itemImageId(itemImage.getId())
-                    .originalImageName(itemImage.getOriginalImageName())
-                    .build();
-
-            itemImageDtos.add(itemImageDto);
-            originalImageNames.add(itemImage.getOriginalImageName());
-            itemImageIds.add(itemImage.getId());
-        });
-
-        this.itemImageDtos = itemImageDtos;
-        this.originalImageNames = originalImageNames;
-        this.itemImageIds = itemImageIds;
     }
 }

@@ -27,25 +27,33 @@ public class CommandRunner implements CommandLineRunner {
 
     @Transactional
     public void initData() {
-        MemberRegisterDto memberRegisterDto = MemberRegisterDto.builder()
+        MemberRegisterDto adminMemberRegisterDto = MemberRegisterDto.builder()
                 .name("관리자")
                 .email("admin@lionshop.com")
                 .password("1q2w3e4r")
                 .password2("1q2w3e4r")
                 .build();
 
-        Member saveMember = memberService.saveMember(memberRegisterDto);
+        MemberRegisterDto userMemberRegisterDto = MemberRegisterDto.builder()
+                .name("사용자")
+                .email("user@lionshop.com")
+                .password("1q2w3e4r")
+                .password2("1q2w3e4r")
+                .build();
+
+        Member adminMember = memberService.saveMember(adminMemberRegisterDto);
+        Member userMember = memberService.saveMember(userMemberRegisterDto);
 
         Delivery delivery1 = Delivery.builder()
                 .deliveryName("마포구 물류센터")
                 .deliveryFee(3000)
-                .member(saveMember)
+                .member(adminMember)
                 .build();
 
         Delivery delivery2 = Delivery.builder()
                 .deliveryName("마포구 물류센터 무료배송")
                 .deliveryFee(0)
-                .member(saveMember)
+                .member(adminMember)
                 .build();
 
         deliveryRepository.save(delivery1);

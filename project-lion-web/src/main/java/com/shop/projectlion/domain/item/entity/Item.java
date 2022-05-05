@@ -3,8 +3,8 @@ package com.shop.projectlion.domain.item.entity;
 import com.shop.projectlion.domain.base.BaseEntity;
 import com.shop.projectlion.domain.delivery.entity.Delivery;
 import com.shop.projectlion.domain.item.constant.ItemSellStatus;
+import com.shop.projectlion.domain.itemimage.entity.ItemImage;
 import com.shop.projectlion.domain.member.entity.Member;
-import com.shop.projectlion.web.adminitem.dto.UpdateItemDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,25 +27,25 @@ public class Item extends BaseEntity {
     @Column(name = "item_detail", columnDefinition = "longtext")
     private String itemDetail;
 
-    @Column(name = "item_name", length = 100)
+    @Column(name = "item_name", nullable = false, length = 100)
     private String itemName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "item_sell_status")
+    @Column(name = "item_sell_status", nullable = false)
     private ItemSellStatus itemSellStatus;
 
-    @Column
+    @Column(nullable = false)
     private Integer price;
 
-    @Column(name = "stock_number")
+    @Column(name = "stock_number", nullable = false)
     private Integer stockNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_id")
+    @JoinColumn(name = "delivery_id", nullable = false)
     private Delivery delivery;
 
     @OneToMany(mappedBy = "item")
@@ -68,15 +68,15 @@ public class Item extends BaseEntity {
         this.delivery = delivery;
     }
 
-    public void modifyItemInfo(UpdateItemDto updateItemDto,
-                               Delivery delivery,
-                               Member member) {
-        this.itemDetail = updateItemDto.getItemDetail();
-        this.itemName = updateItemDto.getItemName();
-        this.itemSellStatus = updateItemDto.getItemSellStatus();
-        this.price = updateItemDto.getPrice();
-        this.stockNumber = updateItemDto.getStockNumber();
-        this.member = member;
+    public void modifyItemInfo(Item updateItem) {
+        this.itemName = updateItem.getItemName();
+        this.itemDetail = updateItem.getItemDetail();
+        this.itemSellStatus = updateItem.getItemSellStatus();
+        this.price = updateItem.getPrice();
+        this.stockNumber = updateItem.getStockNumber();
+    }
+
+    public void modifyDelivery(Delivery delivery) {
         this.delivery = delivery;
     }
 }

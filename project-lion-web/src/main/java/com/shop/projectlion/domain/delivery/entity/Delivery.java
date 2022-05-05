@@ -19,14 +19,14 @@ public class Delivery extends BaseEntity {
     @Column(name = "delivery_id")
     private Long id;
 
-    @Column(name = "delivery_fee")
+    @Column(name = "delivery_fee", nullable = false)
     private Integer deliveryFee;
 
-    @Column(name = "delivery_name", length = 50)
+    @Column(name = "delivery_name", nullable = false, length = 50)
     private String deliveryName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Builder
