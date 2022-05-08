@@ -3,6 +3,7 @@ package com.shop.projectlion.domain.member.service;
 import com.shop.projectlion.domain.member.entity.Member;
 import com.shop.projectlion.domain.member.repository.MemberRepository;
 import com.shop.projectlion.global.error.exception.BusinessException;
+import com.shop.projectlion.global.error.exception.EntityNotFoundException;
 import com.shop.projectlion.global.error.exception.ErrorCode;
 import com.shop.projectlion.web.login.dto.MemberRegisterDto;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,10 @@ public class MemberService {
         if(result.isPresent()) {
             throw new BusinessException(ErrorCode.ALREADY_REGISTERED_MEMBER);
         }
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOT_EXIST_MEMBER));
     }
 }
