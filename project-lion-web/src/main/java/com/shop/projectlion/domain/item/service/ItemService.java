@@ -1,12 +1,13 @@
 package com.shop.projectlion.domain.item.service;
 
-import com.shop.projectlion.domain.delivery.repository.DeliveryRepository;
+import com.shop.projectlion.domain.item.constant.ItemSellStatus;
 import com.shop.projectlion.domain.item.entity.Item;
 import com.shop.projectlion.domain.item.repository.ItemRepository;
-import com.shop.projectlion.domain.itemimage.service.ItemImageService;
 import com.shop.projectlion.global.error.exception.BusinessException;
 import com.shop.projectlion.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ItemService {
 
     private final ItemRepository itemRepository;
-    private final DeliveryRepository deliveryRepository;
-    private final ItemImageService itemImageService;
 
     public Item registerItem(Item item) {
         return itemRepository.save(item);
@@ -38,5 +37,9 @@ public class ItemService {
         Item findItem = findByItemId(itemId);
         findItem.modifyItemInfo(updateItem);
         return findItem;
+    }
+
+    public Page<Item> searchMainItemPage(String searchQuery, Pageable pageable) {
+        return itemRepository.findItemPage(searchQuery, ItemSellStatus.SELL, pageable);
     }
 }

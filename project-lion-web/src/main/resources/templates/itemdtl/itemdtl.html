@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/shoplayout}">
-
-<head>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-</head>
+      layout:decorate="~{layout/layout}">
 
 <!-- 사용자 CSS 추가 -->
-<th:block layout:fragment="css">
+<head>
     <style>
         .mgb-15{
             margin-bottom:15px;
@@ -41,7 +36,7 @@
             overflow: auto;
         }
     </style>
-</th:block>
+</head>
 
 <div layout:fragment="content" style="margin-left:25%;margin-right:25%">
 
@@ -122,8 +117,8 @@
         }
 
         function order(){
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
+            // var token = $("meta[name='_csrf']").attr("content");
+            // var header = $("meta[name='_csrf_header']").attr("content");
 
             var url = "/itemdtl/order";
             var paramData = {
@@ -140,7 +135,7 @@
                 data     : param,
                 beforeSend : function(xhr){
                     /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
-                    xhr.setRequestHeader(header, token);
+                    // xhr.setRequestHeader(header, token);
                 },
                 success  : function(result, status){
                     alert("주문이 완료 되었습니다.");

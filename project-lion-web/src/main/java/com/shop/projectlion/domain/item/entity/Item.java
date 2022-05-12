@@ -5,6 +5,7 @@ import com.shop.projectlion.domain.delivery.entity.Delivery;
 import com.shop.projectlion.domain.item.constant.ItemSellStatus;
 import com.shop.projectlion.domain.itemimage.entity.ItemImage;
 import com.shop.projectlion.domain.member.entity.Member;
+import com.shop.projectlion.global.error.exception.OutOfStockException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,5 +79,17 @@ public class Item extends BaseEntity {
 
     public void modifyDelivery(Delivery delivery) {
         this.delivery = delivery;
+    }
+
+    public void minusStock(Integer orderStockNum) {
+        int remainStock = this.stockNumber - orderStockNum;
+        if(remainStock < 0) throw new OutOfStockException("상품의 재고가 부족합니다. (현재 재고 수량 : " + this.stockNumber + ")");
+        this.stockNumber = remainStock;
+        if(remainStock == 0) this.itemSellStatus = ItemSellStatus.SOLD_OUT;
+    }
+
+    public void plusStock(Integer orderStockNum) {
+        this.stockNumber += orderStockNum;
+        if(this.itemSellStatus == ItemSellStatus.SOLD_OUT) this.itemSellStatus = ItemSellStatus.SELL;
     }
 }

@@ -1,21 +1,20 @@
 package com.shop.projectlion.web.orderhist.controller;
 
-import com.shop.projectlion.domain.order.constant.OrderStatus;
+import com.shop.projectlion.global.config.paging.PageConfig;
+import com.shop.projectlion.web.itemorder.service.ItemOrderService;
 import com.shop.projectlion.web.orderhist.dto.OrderHistDto;
+import com.shop.projectlion.web.orderhist.service.OrderHistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -23,40 +22,35 @@ import java.util.Optional;
 @RequestMapping("/orderhist")
 public class OrderHistController {
 
+    private final OrderHistService orderHistService;
+    private final ItemOrderService itemOrderService;
+
     @GetMapping
     public String orderHist(Optional<Integer> page, Model model, Principal principal) {
-        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 6);
+        Pageable pageable = PageRequest.of(page.orElse(0), PageConfig.ITEM_NUM_PER_PAGE);
+        Page<OrderHistDto> pageOrderHistDtos = orderHistService.getOrderHistDtoPage(pageable, principal.getName());
 
-        // 주문 정보
-        List<OrderHistDto> orderHistDtos = new ArrayList<>();
-        OrderHistDto orderHistDto = OrderHistDto.builder()
-                .orderId(1L)
-                .orderTime(LocalDateTime.now())
-                .orderStatus(OrderStatus.ORDER)
-                .totalPrice(13000)
-                .totalDeliveryFee(3000)
-                .build();
-        orderHistDtos.add(orderHistDto);
-
-        // 주문 상품 정보
-        List<OrderHistDto.OrderItemHistDto> orderItemHistDtos = new ArrayList<>();
-        for(int i=1;i<2;i++) {
-            OrderHistDto.OrderItemHistDto orderItemHistDto = OrderHistDto.OrderItemHistDto.builder()
-                    .imageUrl("/images/2a87e656-79f0-405f-98da-aee2be5ba333.jpg")
-                    .orderPrice(5000)
-                    .count(1)
-                    .itemName("청바지" + i)
-                    .build();
-            orderItemHistDtos.add(orderItemHistDto);
-        }
-        orderHistDto.setOrderItemHistDtos(orderItemHistDtos);
-
-
-        Page<OrderHistDto> pageOrderHistDtos = new PageImpl<>(orderHistDtos, pageable, 30);
         model.addAttribute("orders", pageOrderHistDtos);
         model.addAttribute("page", pageable.getPageNumber());
-        model.addAttribute("maxPage", 5); // 메인페이지에 노출되는 최대 페이지 갯수
+        model.addAttribute("maxPage", PageConfig.MAX_PAGE_NUM_PER_PAGE); // 메인페이지에 노출되는 최대 페이지 갯수
+
         return "orderhist/orderhist";
     }
 
+    @PostMapping(value = "/{orderId}/cancel")
+    public @ResponseBody ResponseEntity<String> itemOrderCancel(@PathVariable Long orderId, Principal principal) {
+
+        if(!itemOrderService.hasCancelAuth(orderId, principal.getName())) {
+            return new ResponseEntity<>("취소 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+
+        try {
+            itemOrderService.cancelOrderItem(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>("성공적으로 취소되었습니다.", HttpStatus.OK);
+    }
 }
