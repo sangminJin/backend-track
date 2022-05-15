@@ -41,6 +41,10 @@ kakao:
   client:
     id: 15a266f0f9d590334005c95254850372 # todo 자기 자신의 kakao.client.id 입력
     secret: sLLQruJvWDB01KsX4rXOaiH3DK2uZDHN
+  kauth:
+    server: https://kauth.kakao.com
+  kapi:
+    server: https://kapi.kakao.com
 
 token:
   secret: jwt-token-secret # todo 자신의 jwt token secret키 입력

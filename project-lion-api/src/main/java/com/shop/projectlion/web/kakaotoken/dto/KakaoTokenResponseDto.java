@@ -1,4 +1,4 @@
-package com.shop.projectlion.web.kakaotoken;
+package com.shop.projectlion.web.kakaotoken.dto;
 
 import lombok.Getter;
 import lombok.Setter;
