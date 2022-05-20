@@ -66,4 +66,8 @@ public class Member extends BaseEntity {
         this.refreshToken = expireRefreshToken;
         tokenExpirationTime = LocalDateTime.now();
     }
+
+    public boolean hasAdminRole() {
+        return Role.ADMIN == this.role;
+    }
 }
