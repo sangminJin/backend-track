@@ -79,7 +79,7 @@ public class LoginApiService {
 
     @Transactional
     public void logout(String authorization) {
-        String accessToken = authorization.substring(7);
+        String accessToken = authorization.split(" ")[1];
         if (!tokenManager.validateToken(accessToken)) throw new NotValidTokenException(ErrorCode.NOT_VALID_TOKEN);
 
         Claims claims = tokenManager.getTokenClaims(accessToken);
