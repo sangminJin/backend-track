@@ -31,6 +31,7 @@ public enum ErrorCode {
 
     // 회원
     MEMBER_NOT_EXISTS(400, "해당 회원은 존재하지 않습니다."),
+    HAS_NOT_ADMIN_ROLE(401, "해당 회원은 ADMIN 권한이 없습니다."),
 
     // 주문
     ORDER_NOT_EXISTS(400, "해당 주문은 존재하지 않습니다."),

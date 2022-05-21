@@ -1,9 +1,9 @@
 package com.shop.projectlion.global.interceptor;
 
 import com.shop.projectlion.domain.jwt.service.TokenManager;
-import com.shop.projectlion.domain.member.constant.Role;
 import com.shop.projectlion.domain.member.entity.Member;
 import com.shop.projectlion.domain.member.service.MemberService;
+import com.shop.projectlion.global.error.exception.AuthorizationException;
 import com.shop.projectlion.global.error.exception.EntityNotFoundException;
 import com.shop.projectlion.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -35,6 +34,8 @@ public class AdminAuthorizationInterceptor implements HandlerInterceptor {
             throw new EntityNotFoundException(ErrorCode.MEMBER_NOT_EXISTS);
         });
 
-        return findMember.hasAdminRole();
+        if(!findMember.hasAdminRole()) throw new AuthorizationException(ErrorCode.HAS_NOT_ADMIN_ROLE);
+
+        return true;
     }
 }
