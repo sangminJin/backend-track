@@ -6,6 +6,7 @@ import com.shop.projectlion.api.item.dto.ItemModifyResponseDto;
 import com.shop.projectlion.api.item.service.ItemApiService;
 import com.shop.projectlion.global.error.exception.ErrorCode;
 import com.shop.projectlion.global.error.exception.InvalidValueException;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,14 @@ public class ItemApiController {
 
     private final ItemApiService itemApiService;
 
+    @ApiOperation(value = "item 단건 조회 api")
     @GetMapping(value = "/items/{itemId}")
     public ResponseEntity<ItemDtlResponseDto> getItemDtl(@PathVariable Long itemId) {
         ItemDtlResponseDto itemDtlResponseDto = itemApiService.getItemDetail(itemId);
         return ResponseEntity.ok(itemDtlResponseDto);
     }
 
+    @ApiOperation(value = "item 정보 수정 api")
     @PatchMapping(value = "/items/{itemId}")
     public ResponseEntity<ItemModifyResponseDto> modifyItem(@PathVariable Long itemId,
                                                             @Valid @RequestBody ItemModifyRequestDto itemModifyRequestDto) {
