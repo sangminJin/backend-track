@@ -78,6 +78,10 @@ public class Item extends BaseEntity {
         this.delivery = updateItem.getDelivery();
     }
 
+    public void modifyDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
     public void minusStock(Integer orderStockNum) {
         int remainStock = this.stockNumber - orderStockNum;
         if(remainStock < 0) throw new OutOfStockException("상품의 재고가 부족합니다. (현재 재고 수량 : " + this.stockNumber + ")");
