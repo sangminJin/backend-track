@@ -17,7 +17,7 @@ public class HealthCheckController {
     @GetMapping("/health")
     public ResponseEntity<HealthCheckResponseDto> getServerStatus() {
         HealthCheckResponseDto healthCheckResponseDto = HealthCheckResponseDto.builder()
-                .status(true)
+                .status(false)
                 .health("ok")
                 .build();
 
