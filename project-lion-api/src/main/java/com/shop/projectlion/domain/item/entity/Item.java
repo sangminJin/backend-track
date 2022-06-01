@@ -75,6 +75,7 @@ public class Item extends BaseEntity {
         this.itemSellStatus = updateItem.getItemSellStatus();
         this.price = updateItem.getPrice();
         this.stockNumber = updateItem.getStockNumber();
+        this.delivery = updateItem.getDelivery();
     }
 
     public void modifyDelivery(Delivery delivery) {
